@@ -3,13 +3,20 @@ name: Deploy Stock
 on:
   push:
     branches:
-      - principal
+      - main
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,17 +27,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: Oteca/PrexLabs.github.io/frontend/package-lock.json
 
       - name: Instalar dependencias
         working-directory: Oteca/PrexLabs.github.io/frontend
-        run: npm install
+        run: npm ci
 
       - name: Construir aplicación
         working-directory: Oteca/PrexLabs.github.io/frontend
         run: npm run build
 
-      - name: Publicar en GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir aplicación
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: Oteca/PrexLabs.github.io/frontend/build
+          path: Oteca/PrexLabs.github.io/frontend/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
