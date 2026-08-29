@@ -1,0 +1,30 @@
+name: Deploy Stock
+
+on:
+  push:
+    branches:
+      - principal
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        working-directory: 0teca/PrexLabs.github.io/frontend
+        run: npm install
+
+      - name: Construir aplicación
+        working-directory: 0teca/PrexLabs.github.io/frontend
+        run: npm run build
