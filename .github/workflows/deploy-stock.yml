@@ -3,7 +3,7 @@ name: Deploy Stock
 on:
   push:
     branches:
-      - main
+      - principal
   workflow_dispatch:
 
 permissions:
@@ -29,11 +29,11 @@ jobs:
           node-version: 24
 
       - name: Instalar dependencias
-        working-directory: ./frontend
+        working-directory: ./Oteca/PrexLabs.github.io/Interfaz
         run: npm install
 
       - name: Construir aplicación
-        working-directory: ./frontend
+        working-directory: ./Oteca/PrexLabs.github.io/Interfaz
         run: npm run build
 
       - name: Configurar GitHub Pages
@@ -42,7 +42,7 @@ jobs:
       - name: Subir aplicación
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./frontend/build
+          path: ./Oteca/PrexLabs.github.io/Interfaz/dist
 
   deploy:
     needs: build
