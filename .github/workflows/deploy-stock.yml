@@ -29,11 +29,11 @@ jobs:
           node-version: 20
 
       - name: Instalar dependencias
-        working-directory: ./frontend
-        run: npm ci
+        working-directory: ./0teca/PrexLabs.github.io/frontend
+        run: npm install
 
       - name: Construir aplicación
-        working-directory: ./frontend
+        working-directory: ./0teca/PrexLabs.github.io/frontend
         run: npm run build
 
       - name: Configurar GitHub Pages
@@ -42,7 +42,7 @@ jobs:
       - name: Subir aplicación
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./frontend/build
+          path: ./0teca/PrexLabs.github.io/frontend/build
 
   deploy:
     needs: build
